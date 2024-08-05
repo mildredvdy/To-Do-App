@@ -1,0 +1,330 @@
+  /*Reset CSS*/
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Helvetica, sans-serif;
+    background-color: linear-gradient(to bottom right, #F4512C, #5E1B89); 
+    color: #F8FFFE; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    margin: 0;
+  }
+
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center; 
+    width: 100%; 
+    max-width: 1200px; 
+    padding: 20px; 
+  }
+
+  h1 {
+    font-size: 40px; 
+    margin-bottom: 20px; 
+  }
+
+  .main-content {
+    display: flex;
+    width: 100%; 
+    max-width: 1200px; 
+  }
+
+  .task-box {
+    width: 10in; 
+    height: 400px; 
+    border: 3px solid #5E1B89; 
+    border-radius: 10px; 
+    padding: 20px; 
+    margin-right: 20px; 
+    background-color: #9D71BC; 
+    color: #F8FFFE; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    justify-content: flex-start; 
+    overflow-y: auto; 
+  }
+
+  .task-box-placeholder {
+    font-size: 24px;
+    color: #F8FFFE; 
+    text-align: left; 
+    margin: 0; 
+  }
+
+  .task-item {
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    margin-bottom: 10px;
+    padding: 5px 0; 
+    border-bottom: 1px solid #5E1B89; 
+    width: 100%; 
+    cursor: pointer; 
+    transition: background-color 0.3s ease; 
+  }
+
+  .task-time {
+    font-size: 14px;
+    color: #F8FFFE; 
+  }
+
+  .task-modified-time {
+    font-size: 14px;
+    color: #F8FFFE; 
+    margin-top: 5px; 
+  }
+
+  .task-deadline {
+    font-size: 14px;
+    color: #F8FFFE; 
+    margin-top: 5px; 
+  }
+
+  .task-input {
+    border: 2px solid #5E1B89;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 18px;
+    width: 100%; 
+    margin-bottom: 10px; 
+    background-color: #FF7F4D; 
+    color: white; 
+    caret-color: white; 
+  }
+
+  .react-datepicker__input-container {
+    width: 100%;
+  }
+
+  .react-datepicker__input-container input {
+    background-color: #FF7F4D;
+    color: #F8FFFE; 
+    border: 2px solid #5E1B89; 
+    border-radius: 5px; 
+    padding: 10px; 
+    font-size: 18px; 
+  }
+
+  .react-datepicker {
+    background-color: #FF7F4D; 
+    border: 2px solid #5E1B89; 
+    border-radius: 10px; 
+  }
+
+  .react-datepicker__header {
+    background-color: #9D71BC; 
+    color: #F8FFFE; 
+  }
+
+  .react-datepicker__day,
+  .react-datepicker__day-name,
+  .react-datepicker__month-text,
+  .react-datepicker__quarter-text {
+    color: #F8FFFE; 
+  }
+
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected {
+    background-color: #9D71BC; 
+    color: #F8FFFE; 
+  }
+
+  .react-datepicker__day:hover {
+    background-color: #9D71BC; 
+  }
+
+  .react-datepicker__triangle {
+    display: none;
+  }
+
+  .task-input[type="date"] {
+    background-color: #FF7F4D; 
+    color: #F8FFFE; 
+  }
+
+  .buttons-section {
+    display: flex;
+    flex-direction: row; 
+    flex-wrap: wrap; 
+    justify-content: space-around; 
+    align-items: center;
+    width: 100%; 
+    max-width: 600px; 
+  }
+
+  .action-button,
+  .start-button {
+    border: 3px solid #5E1B89;
+    background-color: #9D71BC;
+    color: #F8FFFE;
+    padding: 20px 30px; 
+    border-radius: 10px; 
+    margin: 10px; 
+    cursor: pointer;
+    font-size: 24px; 
+    min-width: 200px; 
+    min-height: 20px; 
+    text-align: center; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    flex-grow: 1; 
+  }
+
+  .modal-button {
+    border: 3px solid #5E1B89;
+    background-color: #9D71BC;
+    color: #F8FFFE;
+    padding: 20px 20px;
+    border-radius: 10px;
+    margin: 10px 5px;
+    cursor: pointer;
+    font-size: 24px;
+    min-width: 150px;
+    min-height: 20px;
+    text-align: center;
+    display: inline-block; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-top: 20px !important;
+}
+
+.modal-button:first-child {
+    margin-left: 0; 
+}
+
+.modal-button:last-child {
+    margin-right: 0; 
+}
+
+  /* Button hover */
+  .action-button:hover,
+  .start-button:hover,
+  .modal-button:hover {
+    background-color:#F4512C;
+    color: #F8FFFE;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 165, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+
+  .modal-content {
+    background-color: #9D71BC;
+    color: #F8FFFE; 
+    border-radius: 10px; 
+    padding: 20px;
+    text-align: center; 
+    width: 400px; 
+  }
+
+  .modal-content h2 {
+    margin-bottom: 10px; 
+  }
+
+  .task-item:hover {
+    background-color: #F4512C;
+  }
+
+  .modal-button.add-task-button {
+    background-color: #5E1B89; 
+    color: #F8FFFE; 
+    border: 2px solid #5E1B89;
+  }
+
+  .modal-button.update-task-button {
+    background-color: #5E1B89; 
+    color: #F8FFFE; 
+    border: 2px solid #5E1B89;
+  }
+
+   .modal-button.update-task-status-button {
+    background-color: #5E1B89; 
+    color: #F8FFFE; 
+    border: 2px solid #5E1B89; 
+  }
+
+  .modal-button.delete-task-button {
+    background-color: #5E1B89; 
+    color: #F8FFFE; 
+    border: 2px solid #5E1B89; 
+  } 
+
+  .modal-button.cancel-button {
+    background-color: #F4512C; 
+    color: #F8FFFE; 
+    border: 2px solid #F4512C;
+  }
+
+  .task-item.selected {
+    border: 2px solid #5E1B89;
+    background-color: #F4512C;
+  }
+
+  @media (max-width: 600px) {
+    .task-box {
+      width: 100%; 
+      margin-right: 0; 
+    }
+
+    .modal-content {
+      width: 80%; 
+    }
+
+    .buttons-section {
+      flex-direction: column; 
+      align-items: center; 
+    }
+
+    .action-button,
+    .start-button,
+    .modal-button {
+      min-width: auto; 
+      width: 100%; 
+    }
+
+    .start-button {
+      margin-top: 10px; 
+    }
+  }
+
+  .task-item.done {
+    text-decoration: line-through; 
+    color: #F8FFFE; 
+  }
+
+  .modal-buttons {
+    display: flex;
+    justify-content: center; 
+    margin-top: 20px; 
+  }
+
+  .modal-button {
+    border-radius: 5px;
+    padding: 8px 16px; 
+    cursor: pointer;
+    font-size: 16px; 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0 8px; 
+  }
