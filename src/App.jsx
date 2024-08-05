@@ -232,7 +232,7 @@ function App() {
             <button
               className="modal-button add-task-button"
               onClick={handleAddTask}
-              disabled={!newTask.trim()} // Disable button if newTask is empty or only whitespace
+              disabled={!newTask.trim()} 
             >
               Add Task
             </button>
