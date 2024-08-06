@@ -8,14 +8,41 @@
   }
 
   body {
+    position: relative;
     font-family: Helvetica, sans-serif;
-    background-color: linear-gradient(to bottom right, #F4512C, #5E1B89); 
-    color: #F8FFFE; 
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    min-height: 100vh; 
+    font-weight: bold;
+    color: #5E1B89;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
+    background: linear-gradient(to bottom, #9D71BC 0%, #FF7F4D 20%, #ffffff 20%, #ffffff 100%);
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .app-header {
+    font-family: 'Helvetica', sans-serif;
+    font-weight: bold;
+    font-size: 64px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .app-logo {
+    width: 64px; 
+    height: 64px; 
+    margin-right: 10px; 
+  }  
+  
+  .app-title {
+    font-family: 'Helvetica', sans-serif;
+    font-weight: bold;
+    font-size: 44px;
+    color: #5E1B89;
+    margin: 0; 
   }
 
   .app-container {
@@ -29,6 +56,7 @@
   }
 
   h1 {
+    color: #f55819;
     font-size: 40px; 
     margin-bottom: 20px; 
   }
@@ -40,14 +68,13 @@
   }
 
   .task-box {
-    width: 10in; 
-    height: 400px; 
-    border: 3px solid #5E1B89; 
-    border-radius: 10px; 
+    width: 30in; 
+    height: 400px;  
+    border: 3px solid #5E1B89;
+    border-radius: 20px; 
     padding: 20px; 
     margin-right: 20px; 
-    background-color: #9D71BC; 
-    color: #F8FFFE; 
+    color: #FF7F4D; 
     display: flex;
     flex-direction: column;
     align-items: flex-start; 
@@ -56,20 +83,26 @@
   }
 
   .task-box-placeholder {
-    font-size: 24px;
-    color: #F8FFFE; 
-    text-align: left; 
-    margin: 0; 
+    font-size: 44px;
+    color: #5E1B89; 
+    text-align: center; 
+    margin-top: 20px; 
   }
 
+  .task-input::placeholder {
+    color: #5E1B89; 
+    font-size: 18px; 
+  }
+  
   .task-item {
+    color: #5E1B89;
     font-size: 24px;
     display: flex;
     flex-direction: column;
     align-items: flex-start; 
     margin-bottom: 10px;
     padding: 5px 0; 
-    border-bottom: 1px solid #5E1B89; 
+    border-bottom: 2px solid #f55819; 
     width: 100%; 
     cursor: pointer; 
     transition: background-color 0.3s ease; 
@@ -77,31 +110,50 @@
 
   .task-time {
     font-size: 14px;
-    color: #F8FFFE; 
+    color: #5E1B89; 
   }
 
-  .task-modified-time {
+  .task-edited-time {
     font-size: 14px;
-    color: #F8FFFE; 
+    color: #5E1B89; 
     margin-top: 5px; 
   }
 
   .task-deadline {
     font-size: 14px;
-    color: #F8FFFE; 
+    color: #5E1B89; 
     margin-top: 5px; 
   }
+
+  .react-datepicker__input-container input {
+    border: 2px solid #5E1B89;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 18px;
+    width: 100%; 
+    background-color: #FF7F4D; 
+    color: #5E1B89; 
+    caret-color: #5E1B89; 
+  }
+  
+  .task-input:focus,
+  .react-datepicker__input-container input:focus {
+    border-color: #5E1B89; 
+    outline: none;
+  }
+
 
   .task-input {
     border: 2px solid #5E1B89;
     border-radius: 5px;
     padding: 10px;
     font-size: 18px;
+    font-weight: bold;
     width: 100%; 
     margin-bottom: 10px; 
-    background-color: #FF7F4D; 
-    color: white; 
-    caret-color: white; 
+    background-color: transparent; 
+    color: #5E1B89; 
+    caret-color: #5E1B89; 
   }
 
   .react-datepicker__input-container {
@@ -109,8 +161,9 @@
   }
 
   .react-datepicker__input-container input {
-    background-color: #FF7F4D;
-    color: #F8FFFE; 
+    background-color: transparent;
+    color: #5E1B89; 
+    font-weight: bold;
     border: 2px solid #5E1B89; 
     border-radius: 5px; 
     padding: 10px; 
@@ -149,6 +202,54 @@
     display: none;
   }
 
+  .time-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .time-controls .time {
+    font-weight: bold;
+    font-size: 30px; 
+    margin-right: 10px; 
+  }
+  
+  .time-controls button {
+    font-size: 10px; 
+    background-color: #FF7F4D;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  
+  .time-controls button.arrowhead {
+    width: 5px; 
+    margin-right: 10px;
+    font-size: 30px; 
+    background-color: #FF7F4D;
+  }  
+
+  .time-controls button:last-child {
+    font-size: 12px; 
+  }
+  
+  .time-controls button:hover {
+    border: 2px solid #FF7F4D;
+  }
+
+  .time-controls button:focus {
+    outline: none; 
+    border: 2px solid #FF7F4D;
+  }
+  
+
+  @media (max-width: 768px) {
+    .time-controls button.arrowhead {
+      width: 15px; 
+      margin-right: 3px; 
+    }
+  }
+  
+
   .task-input[type="date"] {
     background-color: #FF7F4D; 
     color: #F8FFFE; 
@@ -167,8 +268,8 @@
   .action-button,
   .start-button {
     border: 3px solid #5E1B89;
-    background-color: #9D71BC;
-    color: #F8FFFE;
+    background-color: transparent;
+    color: #F55819;
     padding: 20px 30px; 
     border-radius: 10px; 
     margin: 10px; 
@@ -182,12 +283,17 @@
     justify-content: center; 
     transition: background-color 0.3s ease, color 0.3s ease;
     flex-grow: 1; 
+    width: 100%; 
+    padding: 6px; 
+    font-size: 20px; 
+    font-weight: bold;
+    cursor: pointer; 
   }
 
   .modal-button {
     border: 3px solid #5E1B89;
-    background-color: #9D71BC;
-    color: #F8FFFE;
+    background-color: transparent;
+    color: #5E1B89;
     padding: 20px 20px;
     border-radius: 10px;
     margin: 10px 5px;
@@ -199,7 +305,7 @@
     display: inline-block; 
     transition: background-color 0.3s ease, color 0.3s ease;
     margin-top: 20px !important;
-}
+  }
 
 .modal-button:first-child {
     margin-left: 0; 
@@ -209,12 +315,17 @@
     margin-right: 0; 
 }
 
-  /* Button hover */
   .action-button:hover,
-  .start-button:hover,
-  .modal-button:hover {
-    background-color:#F4512C;
+  .start-button:hover{
+    background-color:#FF7F4D;
+    border: 3px solid #5E1B89;
     color: #F8FFFE;
+  }
+
+  .action-button:focus,
+  .start-button:focus{
+    outline: none; 
+    border: 2px solid #5E1B89;
   }
 
   .modal-overlay {
@@ -223,7 +334,6 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 165, 0, 0.5); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -231,8 +341,9 @@
   }
 
   .modal-content {
-    background-color: #9D71BC;
-    color: #F8FFFE; 
+    background-color: #F8FFFE;
+    color: #5E1B89; 
+    border: 3px solid #FF7F4D;
     border-radius: 10px; 
     padding: 20px;
     text-align: center; 
@@ -244,42 +355,48 @@
   }
 
   .task-item:hover {
-    background-color: #F4512C;
+    border: 3px solid #5E1B89;
+    background-color: #FF7F4D;
+    border-radius: 10px;
+  }
+  
+  .modal-button.delete-button:hover,
+  .modal-button.add-button:hover{
+    border: 2px solid #5E1B89;
+    background-color:#5E1B89;
+    color: #F8FFFE;
   }
 
-  .modal-button.add-task-button {
-    background-color: #5E1B89; 
-    color: #F8FFFE; 
+  .modal-button.add-button:focus,
+  .modal-button.delete-button:focus{
+    outline: none; 
     border: 2px solid #5E1B89;
   }
-
-  .modal-button.update-task-button {
-    background-color: #5E1B89; 
+    
+  .modal-button.cancel-button:hover {
+    background-color: #FF7F4D; 
     color: #F8FFFE; 
-    border: 2px solid #5E1B89;
-  }
-
-   .modal-button.update-task-status-button {
-    background-color: #5E1B89; 
-    color: #F8FFFE; 
-    border: 2px solid #5E1B89; 
-  }
-
-  .modal-button.delete-task-button {
-    background-color: #5E1B89; 
-    color: #F8FFFE; 
-    border: 2px solid #5E1B89; 
+    border: 2px solid #FF7F4D; 
   } 
 
+  .modal-button.delete-task-button,
   .modal-button.cancel-button {
-    background-color: #F4512C; 
+    background-color: #FF7F4D; 
     color: #F8FFFE; 
-    border: 2px solid #F4512C;
+    border: 2px solid #FF7F4D; 
+  } 
+
+  .modal-button.delete-task-button:focus,
+  .modal-button.cancel-button:focus{
+    outline: none; 
+    border: 2px solid #FF7F4D;
   }
 
   .task-item.selected {
     border: 2px solid #5E1B89;
-    background-color: #F4512C;
+    background-color: #9D71BC;
+    color: #F8FFFE;
+    border-radius: 10px;
   }
 
   @media (max-width: 600px) {
@@ -311,20 +428,76 @@
 
   .task-item.done {
     text-decoration: line-through; 
-    color: #F8FFFE; 
-  }
-
-  .modal-buttons {
-    display: flex;
-    justify-content: center; 
-    margin-top: 20px; 
   }
 
   .modal-button {
-    border-radius: 5px;
+    background-color: #5E1B89;
+    color: #F8FFFE;
+    border-radius: 5px #5E1B89;
     padding: 8px 16px; 
     cursor: pointer;
     font-size: 16px; 
     transition: background-color 0.3s ease, color 0.3s ease;
     margin: 0 8px; 
   }
+
+  .task-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .task-icons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+  }
+  
+  .task-icons .task-icon {
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 5px;
+  }
+  
+  .task-icons .edit-icon {
+    color: #5E1B89;
+  }
+  
+  .task-icons .delete-icon {
+    color: #5E1B89;
+  }
+  
+  .task-icons .status-icon {
+    color: #5E1B89;
+  }
+
+  .task-icon:hover {
+    color: #F8FFFE;
+  }
+
+  .star-icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #5E1B89; 
+}
+
+.star-icon.favorite {
+  color: #F55819
+}
+
+.info-modal {
+  text-align: center; 
+}
+
+.info-modal h2 {
+  text-align: center; 
+}
+
+.info-modal p {
+  text-align: justify;
+}
+
+

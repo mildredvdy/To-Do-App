@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { FaEdit, FaTrashAlt, FaCheck, FaStar, FaInfoCircle } from 'react-icons/fa';
 import './App.css';
+import logo from './logo.png';
 
 function App() {
   const [showOptions, setShowOptions] = useState(false);
@@ -11,103 +13,120 @@ function App() {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
   const [newTask, setNewTask] = useState('');
-  const [deadline, setDeadline] = useState(null);
+  const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
-  const [selectedTaskIndexForDelete, setSelectedTaskIndexForDelete] = useState(null);
   const [editedTask, setEditedTask] = useState('');
-  const [editedDeadline, setEditedDeadline] = useState(null);
+  const [editedDateTime, setEditedDateTime] = useState(null);
+  const [editedTaskIndex, setEditedTaskIndex] = useState(null);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false); 
+
+  const today = new Date();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setSelectedDateTime(null);
+    }
+    if (isEditModalOpen && editedDateTime === null) {
+      setEditedDateTime(new Date());
+    }
+  }, [isModalOpen, isEditModalOpen, editedDateTime]);
 
   const handleAddTask = () => {
-    if (newTask.trim() && deadline) {
+    if (newTask.trim() && selectedDateTime) {
       const newTaskObj = {
         text: newTask,
         createdAt: new Date().toLocaleString(),
-        deadline: deadline.toLocaleDateString('en-US'),
-        isDone: false
+        deadline: selectedDateTime.toLocaleString(),
+        isDone: false,
+        isFavorite: false,
       };
       const updatedTasks = [...tasks, newTaskObj];
       setTasks(updatedTasks);
       saveTasksToLocalStorage(updatedTasks);
       setNewTask('');
-      setDeadline(null);
+      setSelectedDateTime(null);
       setIsModalOpen(false);
     }
   };
 
-  const toggleTaskStatus = (index, newStatus) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, isDone: newStatus } : task
-    );
+  const handleEditClick = (index) => {
+    const taskToEdit = tasks[index];
+    setEditedTask(taskToEdit.text);
+    setEditedDateTime(new Date(taskToEdit.deadline));
+    setEditedTaskIndex(index);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteClick = (index) => {
+    setSelectedTaskIndex(index);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleTaskStatusClick = (index) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index].isDone = !updatedTasks[index].isDone;
     setTasks(updatedTasks);
     saveTasksToLocalStorage(updatedTasks);
-    setIsUpdateModalOpen(false);
-    setSelectedTaskIndex(null);
   };
 
-  const handleDeleteTask = () => {
-    if (selectedTaskIndexForDelete !== null) {
-      const updatedTasks = tasks.filter((task, index) => index !== selectedTaskIndexForDelete);
-      setTasks(updatedTasks);
-      saveTasksToLocalStorage(updatedTasks);
-      setIsDeleteModalOpen(false);
-      setSelectedTaskIndexForDelete(null);
+  const handleFavoriteClick = (index) => {
+    const updatedTasks = [...tasks];
+    const taskToToggle = updatedTasks[index];
+  
+    const highestPriorityIndex = updatedTasks.findIndex(task => task.isFavorite);
+  
+    taskToToggle.isFavorite = !taskToToggle.isFavorite;
+  
+    if (taskToToggle.isFavorite) {
+      updatedTasks.splice(index, 1);
+      updatedTasks.unshift(taskToToggle);
+
+    } else {
+      updatedTasks.splice(index, 1);
+      updatedTasks.push(taskToToggle);
     }
+  
+    setTasks(updatedTasks);
+    saveTasksToLocalStorage(updatedTasks);
   };
-
-  const handleEditTask = () => {
-    if (selectedTaskIndex !== null) {
-      const taskToEdit = tasks[selectedTaskIndex];
-      setEditedTask(taskToEdit.text);
-      setEditedDeadline(new Date(taskToEdit.deadline));
-      setIsEditModalOpen(true);
-    }
-  };
-
+  
   const handleUpdateEditedTask = () => {
-    if (selectedTaskIndex !== null) {
-      const editedTaskObj = {
-        ...tasks[selectedTaskIndex],
-        text: editedTask,
-        deadline: editedDeadline.toLocaleDateString('en-US'),
-        editedAt: new Date().toLocaleString(), 
-      };
+    if (editedTaskIndex !== null && editedDateTime) {
       const updatedTasks = tasks.map((task, index) =>
-        index === selectedTaskIndex ? editedTaskObj : task
+        index === editedTaskIndex
+          ? {
+              ...task,
+              text: editedTask,
+              deadline: editedDateTime.toLocaleString(),
+              editedAt: new Date().toLocaleString(),
+            }
+          : task
       );
       setTasks(updatedTasks);
       saveTasksToLocalStorage(updatedTasks);
       setIsEditModalOpen(false);
       setEditedTask('');
-      setEditedDeadline(null);
+      setEditedDateTime(null);
+      setEditedTaskIndex(null);
+    }
+  };
+
+  const handleDeleteTask = () => {
+    if (selectedTaskIndex !== null) {
+      const updatedTasks = tasks.filter((task, index) => index !== selectedTaskIndex);
+      setTasks(updatedTasks);
+      saveTasksToLocalStorage(updatedTasks);
+      setIsDeleteModalOpen(false);
       setSelectedTaskIndex(null);
     }
   };
-  
-  const markAllAsDone = () => {
-    const updatedTasks = tasks.map(task => ({ ...task, isDone: true }));
-    setTasks(updatedTasks);
-    saveTasksToLocalStorage(updatedTasks);
-  };
 
-  const markAllAsUndone = () => {
-    const updatedTasks = tasks.map(task => ({ ...task, isDone: false }));
-    setTasks(updatedTasks);
-    saveTasksToLocalStorage(updatedTasks);
-  };
-
-  const deleteAllTasks = () => {
-    setIsDeleteAllModalOpen(true);
-  };
-
-  const confirmDeleteAllTasks = (confirm) => {
-    if (confirm) {
-      setTasks([]);
-      saveTasksToLocalStorage([]);
-    }
+  const handleDeleteAllTasks = () => {
+    setTasks([]);
+    saveTasksToLocalStorage([]);
     setIsDeleteAllModalOpen(false);
   };
 
@@ -115,38 +134,100 @@ function App() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   };
 
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-  }, []);
-
-  const handleUpdateTask = () => {
-    if (selectedTaskIndex !== null) {
-      setIsUpdateModalOpen(true);
-    }
+  const formatHours = (dateTime) => {
+    if (!dateTime) return '12';
+    let hours = dateTime.getHours() % 12;
+    if (hours === 0) hours = 12;
+    return hours.toString().padStart(2, '0');
   };
 
-  const handleUpdateConfirmation = (confirm) => {
-    if (confirm && selectedTaskIndex !== null) {
-      const task = tasks[selectedTaskIndex];
-      const confirmationMessage = task.isDone ? 'Undone?' : 'Done?';
-      toggleTaskStatus(selectedTaskIndex, !task.isDone);
-    }
-    setIsUpdateModalOpen(false);
-  };  
-
-  const handleTaskSelect = (index) => {
-    setSelectedTaskIndex(index);
+  const formatMinutes = (dateTime) => {
+    if (!dateTime) return '00';
+    return dateTime.getMinutes().toString().padStart(2, '0');
   };
 
-  const today = new Date();
+  const formatAmPm = (dateTime) => {
+    if (!dateTime) return 'AM';
+    return dateTime.getHours() >= 12 ? 'PM' : 'AM';
+  };
+
+  const incrementHours = () => {
+    const newDateTime = new Date(selectedDateTime);
+    newDateTime.setHours(newDateTime.getHours() + 1);
+    setSelectedDateTime(newDateTime);
+  };
+
+  const decrementHours = () => {
+    const newDateTime = new Date(selectedDateTime);
+    newDateTime.setHours(newDateTime.getHours() - 1);
+    setSelectedDateTime(newDateTime);
+  };
+
+  const incrementMinutes = () => {
+    const newDateTime = new Date(selectedDateTime);
+    newDateTime.setMinutes(newDateTime.getMinutes() + 1);
+    setSelectedDateTime(newDateTime);
+  };
+
+  const decrementMinutes = () => {
+    const newDateTime = new Date(selectedDateTime);
+    newDateTime.setMinutes(newDateTime.getMinutes() - 1);
+    setSelectedDateTime(newDateTime);
+  };
+
+  const toggleAmPm = () => {
+    const newDateTime = new Date(selectedDateTime);
+    if (newDateTime.getHours() >= 12) {
+      newDateTime.setHours(newDateTime.getHours() - 12);
+    } else {
+      newDateTime.setHours(newDateTime.getHours() + 12);
+    }
+    setSelectedDateTime(newDateTime);
+  };
+
+  const incrementHoursEdit = () => {
+    const newDateTime = new Date(editedDateTime);
+    newDateTime.setHours(newDateTime.getHours() + 1);
+    setEditedDateTime(newDateTime);
+  };
+
+  const decrementHoursEdit = () => {
+    const newDateTime = new Date(editedDateTime);
+    newDateTime.setHours(newDateTime.getHours() - 1);
+    setEditedDateTime(newDateTime);
+  };
+
+  const incrementMinutesEdit = () => {
+    const newDateTime = new Date(editedDateTime);
+    newDateTime.setMinutes(newDateTime.getMinutes() + 1);
+    setEditedDateTime(newDateTime);
+  };
+
+  const decrementMinutesEdit = () => {
+    const newDateTime = new Date(editedDateTime);
+    newDateTime.setMinutes(newDateTime.getMinutes() - 1);
+    setEditedDateTime(newDateTime);
+  };
+
+  const toggleAmPmEdit = () => {
+    const newDateTime = new Date(editedDateTime);
+    if (newDateTime.getHours() >= 12) {
+      newDateTime.setHours(newDateTime.getHours() - 12);
+    } else {
+      newDateTime.setHours(newDateTime.getHours() + 12);
+    }
+    setEditedDateTime(newDateTime);
+  };
 
   return (
     <div className="app-container">
-      <h1>My To-do List</h1>
+      <header className="app-header">
+        <img src={logo} alt="Logo" className="app-logo" />
+        <span className="lexmeet-title">LexMeet</span>
+      </header>
+      <h1>My To-do List <FaInfoCircle className="info-button" onClick={() => setIsInfoModalOpen(true)} /></h1>
       <div className="main-content">
+
         {showOptions && (
           <div className="task-box">
             {tasks.length === 0 ? (
@@ -155,15 +236,32 @@ function App() {
               tasks.map((task, index) => (
                 <div
                   key={index}
-                  className={`task-item ${selectedTaskIndex === index ? 'selected' : ''} ${task.isDone ? 'done' : ''}`}
-                  onClick={() => handleTaskSelect(index)}
+                  className={`task-item ${task.isDone ? 'done' : ''}`}
                 >
                   <p>{task.text}</p>
                   <p className="task-time">Created at: {task.createdAt}</p>
                   {task.editedAt && (
-                    <p className="task-modified-time">Last modified at: {task.editedAt}</p>
+                    <p className="task-edited-time">Last modified: {task.editedAt}</p>
                   )}
                   <p className="task-deadline">Deadline: {task.deadline}</p>
+                  <div className="task-icons">
+                    <FaStar
+                      className={`task-icon star-icon ${task.isFavorite ? 'favorite' : ''}`}
+                      onClick={() => handleFavoriteClick(index)}
+                    />
+                    <FaEdit
+                      className="task-icon edit-icon"
+                      onClick={() => handleEditClick(index)}
+                    />
+                    <FaTrashAlt
+                      className="task-icon delete-icon"
+                      onClick={() => handleDeleteClick(index)}
+                    />
+                    <FaCheck
+                      className="task-icon status-icon"
+                      onClick={() => handleTaskStatusClick(index)}
+                    />
+                  </div>
                 </div>
               ))
             )}
@@ -172,40 +270,34 @@ function App() {
         <div className="buttons-section">
           {!showOptions ? (
             <button className="start-button" onClick={() => setShowOptions(true)}>
-              Click to Start
+              View Task Board
             </button>
           ) : (
-            <>
+            <div className="column">
               <button className="action-button" onClick={() => setIsModalOpen(true)}>
                 Add Task
               </button>
-              <button className="action-button" onClick={handleEditTask}>
-                Edit Task
-              </button>
-              <button className="action-button" onClick={handleUpdateTask}>
-                Update Task
-              </button>
-              <button
-                className="action-button"
-                onClick={() => {
-                  if (selectedTaskIndex !== null) {
-                    setIsDeleteModalOpen(true);
-                    setSelectedTaskIndexForDelete(selectedTaskIndex);
-                  }
-                }}
-              >
-                Delete Task
-              </button>
-              <button className="action-button" onClick={markAllAsDone}>
+              <button className="action-button" onClick={() => {
+                const updatedTasks = tasks.map(task => ({ ...task, isDone: true }));
+                setTasks(updatedTasks);
+                saveTasksToLocalStorage(updatedTasks);
+              }}>
                 Mark All as Done
               </button>
-              <button className="action-button" onClick={markAllAsUndone}>
+              <button className="action-button" onClick={() => {
+                const updatedTasks = tasks.map(task => ({ ...task, isDone: false }));
+                setTasks(updatedTasks);
+                saveTasksToLocalStorage(updatedTasks);
+              }}>
                 Mark All as Undone
               </button>
-              <button className="action-button" onClick={deleteAllTasks}>
+              <button className="action-button" onClick={() => setIsDeleteAllModalOpen(true)}>
                 Delete All Tasks
               </button>
-            </>
+              <button className="action-button" onClick={() => setShowOptions(false)}>
+                Go Back to Main Menu
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -221,19 +313,29 @@ function App() {
               className="task-input"
               placeholder="Enter your task here"
             />
-            <DatePicker
-              selected={deadline}
-              onChange={(date) => setDeadline(date)}
-              className="task-input"
-              dateFormat="MM/dd/yyyy"
-              placeholderText="Select a deadline"
-              minDate={today}
-            />
-            <button
-              className="modal-button add-task-button"
-              onClick={handleAddTask}
-              disabled={!newTask.trim()} // Disable button if newTask is empty or only whitespace
-            >
+            <div className="date-time-selectors">
+              <DatePicker
+                selected={selectedDateTime}
+                onChange={(date) => setSelectedDateTime(date)}
+                className="task-input"
+                dateFormat="MM/dd/yyyy"
+                placeholderText="Select a date"
+                minDate={today}
+              />
+              <div className="time-controls">
+                <button onClick={decrementHours}>&#9660;</button>
+                <span>{selectedDateTime ? formatHours(selectedDateTime) : '00'}</span>
+                <button onClick={incrementHours}>&#9650;</button>
+
+                <span>:</span>
+                <button onClick={decrementMinutes}>&#9660;</button>
+                <span>{selectedDateTime ? formatMinutes(selectedDateTime) : '00'}</span>
+                <button onClick={incrementMinutes}>&#9650;</button>
+
+                <button onClick={toggleAmPm}>{selectedDateTime ? formatAmPm(selectedDateTime) : 'AM'}</button>
+              </div>
+            </div>
+            <button className="modal-button add-button" onClick={handleAddTask}>
               Add Task
             </button>
             <button className="modal-button cancel-button" onClick={() => setIsModalOpen(false)}>
@@ -254,20 +356,31 @@ function App() {
               className="task-input"
               placeholder="Enter edited task here"
             />
-            <DatePicker
-              selected={editedDeadline}
-              onChange={(date) => setEditedDeadline(date)}
-              className="task-input"
-              dateFormat="MM/dd/yyyy"
-              placeholderText="Select edited deadline"
-              minDate={today}
-            />
-            <button
-              className="modal-button update-task-button"
-              onClick={handleUpdateEditedTask}
-              disabled={!editedTask.trim()} 
-            >
-              Update Task
+            <div className="date-time-selectors">
+              <DatePicker
+                selected={editedDateTime}
+                onChange={(date) => setEditedDateTime(date)}
+                className="task-input"
+                dateFormat="MM/dd/yyyy"
+                placeholderText="Select a date"
+                minDate={today}
+              />
+              <div className="time-controls">
+                <button onClick={decrementHoursEdit}>&#9660;</button>
+                <span>{editedDateTime ? formatHours(editedDateTime) : '00'}</span>
+                <button onClick={incrementHoursEdit}>&#9650;</button>
+
+                <span>:</span>
+
+                <button onClick={decrementMinutesEdit}>&#9660;</button>
+                <span>{editedDateTime ? formatMinutes(editedDateTime) : '00'}</span>
+                <button onClick={incrementMinutesEdit}>&#9650;</button>
+
+                <button onClick={toggleAmPmEdit}>{editedDateTime ? formatAmPm(editedDateTime) : 'AM'}</button>
+              </div>
+            </div>
+            <button className="modal-button add-button" onClick={handleUpdateEditedTask}>
+              Save Changes
             </button>
             <button className="modal-button cancel-button" onClick={() => setIsEditModalOpen(false)}>
               Cancel
@@ -276,46 +389,49 @@ function App() {
         </div>
       )}
 
-      {isUpdateModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>Update Task</h2>
-            <p>Are you sure to {tasks[selectedTaskIndex]?.isDone ? 'mark this task as Undone?' : 'mark this task as Done?'}</p>
-            <button className="modal-button update-task-status-button" onClick={() => handleUpdateConfirmation(true)}>
-              Yes
-            </button>
-            <button className="modal-button cancel-button" onClick={() => setIsUpdateModalOpen(false)}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
       {isDeleteModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content delete-modal">
             <h2>Delete Task</h2>
             <p>Are you sure you want to delete this task?</p>
-            <button className="modal-button delete-task-button" onClick={handleDeleteTask}>
-              Delete
-            </button>
-            <button className="modal-button cancel-button" onClick={() => setIsDeleteModalOpen(false)}>
-              Cancel
-            </button>
+            <div className="delete-buttons">
+              <button className="modal-button delete-button" onClick={handleDeleteTask}>
+                Delete
+              </button>
+              <button className="modal-button cancel-button" onClick={() => setIsDeleteModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {isDeleteAllModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content delete-modal">
             <h2>Delete All Tasks</h2>
             <p>Are you sure you want to delete all tasks?</p>
-            <button className="modal-button delete-task-button" onClick={() => confirmDeleteAllTasks(true)}>
-              Delete All
-            </button>
-            <button className="modal-button cancel-button" onClick={() => confirmDeleteAllTasks(false)}>
-              Cancel
+            <div className="delete-buttons">
+              <button className="modal-button delete-button" onClick={handleDeleteAllTasks}>
+                Delete All
+              </button>
+              <button className="modal-button cancel-button" onClick={() => setIsDeleteAllModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isInfoModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content info-modal">
+            <h2>Information</h2>
+            <p>Welcome to our To-Do List application, designed to help you manage your tasks efficiently and stay organized.
+            Our mission is to provide a simple yet powerful tool to help individuals and teams track their tasks, prioritize their work, 
+            and boost productivity.</p>
+            <button className="modal-button cancel-button" onClick={() => setIsInfoModalOpen(false)}>
+              Close
             </button>
           </div>
         </div>
