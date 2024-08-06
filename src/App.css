@@ -90,7 +90,7 @@
   }
 
   .task-input::placeholder {
-    color: #5E1B89; 
+    color: #808080; 
     font-size: 18px; 
   }
   
@@ -152,7 +152,7 @@
     width: 100%; 
     margin-bottom: 10px; 
     background-color: transparent; 
-    color: #5E1B89; 
+    color: #808080; 
     caret-color: #5E1B89; 
   }
 
@@ -162,7 +162,7 @@
 
   .react-datepicker__input-container input {
     background-color: transparent;
-    color: #5E1B89; 
+    color: #808080; 
     font-weight: bold;
     border: 2px solid #5E1B89; 
     border-radius: 5px; 
@@ -206,6 +206,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #808080;
   }
 
   .time-controls .time {
@@ -215,10 +216,13 @@
   }
   
   .time-controls button {
-    font-size: 10px; 
+    font-size: 16px; 
     background-color: #FF7F4D;
     margin-right: 5px;
     margin-left: 5px;
+    color: #5E1B89;
+    font-weight: bolder;
+    padding: 6px;
   }
   
   .time-controls button.arrowhead {
