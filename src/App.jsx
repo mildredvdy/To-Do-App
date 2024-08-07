@@ -15,13 +15,15 @@ function App() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
+  const [isEmptyBoxModalOpen, setIsEmptyBoxModalOpen] = useState(false);
   const [newTask, setNewTask] = useState('');
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
   const [editedTask, setEditedTask] = useState('');
   const [editedDateTime, setEditedDateTime] = useState(null);
   const [editedTaskIndex, setEditedTaskIndex] = useState(null);
-  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false); 
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isTaskEmptyModalOpen, setIsTaskEmptyModalOpen] = useState(false); // New state for task empty modal
 
   const today = new Date();
 
@@ -35,7 +37,9 @@ function App() {
   }, [isModalOpen, isEditModalOpen, editedDateTime]);
 
   const handleAddTask = () => {
-    if (newTask.trim() && selectedDateTime) {
+    if (newTask.trim() === '' || selectedDateTime === null) {
+      setIsTaskEmptyModalOpen(true);
+    } else {
       const newTaskObj = {
         text: newTask,
         createdAt: new Date().toLocaleString(),
@@ -75,26 +79,25 @@ function App() {
   const handleFavoriteClick = (index) => {
     const updatedTasks = [...tasks];
     const taskToToggle = updatedTasks[index];
-  
-    const highestPriorityIndex = updatedTasks.findIndex(task => task.isFavorite);
-  
+
+    const highestPriorityIndex = updatedTasks.findIndex((task) => task.isFavorite);
+
     taskToToggle.isFavorite = !taskToToggle.isFavorite;
-  
+
     if (taskToToggle.isFavorite) {
       updatedTasks.splice(index, 1);
       updatedTasks.unshift(taskToToggle);
-
     } else {
       updatedTasks.splice(index, 1);
       updatedTasks.push(taskToToggle);
     }
-  
+
     setTasks(updatedTasks);
     saveTasksToLocalStorage(updatedTasks);
   };
-  
+
   const handleUpdateEditedTask = () => {
-    if (editedTaskIndex !== null && editedDateTime) {
+    if (editedTaskIndex !== null && editedTask.trim() !== '' && editedDateTime) {
       const updatedTasks = tasks.map((task, index) =>
         index === editedTaskIndex
           ? {
@@ -111,6 +114,8 @@ function App() {
       setEditedTask('');
       setEditedDateTime(null);
       setEditedTaskIndex(null);
+    } else {
+      setIsTaskEmptyModalOpen(true);
     }
   };
 
@@ -125,9 +130,18 @@ function App() {
   };
 
   const handleDeleteAllTasks = () => {
+    if (tasks.length === 0) {
+      setIsEmptyBoxModalOpen(true);
+    } else {
+      setIsDeleteAllModalOpen(true);
+    }
+  };
+
+  const confirmDeleteAllTasks = () => {
     setTasks([]);
     saveTasksToLocalStorage([]);
     setIsDeleteAllModalOpen(false);
+    setIsEmptyBoxModalOpen(false);
   };
 
   const saveTasksToLocalStorage = (tasks) => {
@@ -291,7 +305,7 @@ function App() {
               }}>
                 Mark All as Undone
               </button>
-              <button className="action-button" onClick={() => setIsDeleteAllModalOpen(true)}>
+              <button className="action-button" onClick={handleDeleteAllTasks}>
                 Delete All Tasks
               </button>
               <button className="action-button" onClick={() => setShowOptions(false)}>
@@ -412,11 +426,39 @@ function App() {
             <h2>Delete All Tasks</h2>
             <p>Are you sure you want to delete all tasks?</p>
             <div className="delete-buttons">
-              <button className="modal-button delete-button" onClick={handleDeleteAllTasks}>
+              <button className="modal-button delete-button" onClick={confirmDeleteAllTasks}>
                 Delete All
               </button>
               <button className="modal-button cancel-button" onClick={() => setIsDeleteAllModalOpen(false)}>
                 Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isEmptyBoxModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content delete-modal">
+            <h2>Empty Task Box</h2>
+            <p>There are no tasks to delete.</p>
+            <div className="delete-buttons">
+              <button className="modal-button cancel-button" onClick={() => setIsEmptyBoxModalOpen(false)}>
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isTaskEmptyModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content delete-modal">
+            <h2>Empty Task</h2>
+            <p>Please fill in the missing details.</p>
+            <div className="delete-buttons">
+              <button className="modal-button cancel-button" onClick={() => setIsTaskEmptyModalOpen(false)}>
+                OK
               </button>
             </div>
           </div>
