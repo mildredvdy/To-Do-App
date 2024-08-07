@@ -23,7 +23,7 @@ function App() {
   const [editedDateTime, setEditedDateTime] = useState(null);
   const [editedTaskIndex, setEditedTaskIndex] = useState(null);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-  const [isTaskEmptyModalOpen, setIsTaskEmptyModalOpen] = useState(false); // New state for task empty modal
+  const [isTaskEmptyModalOpen, setIsTaskEmptyModalOpen] = useState(false); 
 
   const today = new Date();
 
